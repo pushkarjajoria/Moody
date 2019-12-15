@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Moody</string>
+    <string name="appbar_scrolling_view_behavior" translatable="false">com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior</string>
+    <string name="title_activity_typing__test">Typing_Test</string>
 </resources>
