@@ -3,6 +3,7 @@ package com.example.moody;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -13,6 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -21,9 +23,14 @@ import com.dd.processbutton.iml.ActionProcessButton;
 import com.example.moody.Titanic.Titanic;
 import com.example.moody.Titanic.TitanicTextView;
 import com.example.moody.Titanic.Typefaces;
+import com.example.moody.metadata.ActivityQueue;
+import com.example.moody.metadata.JavaActivityQueue;
+import com.example.moody.metadata.QueueIngester;
+import com.example.moody.persistence.PersistanceService;
 import com.example.moody.persistence.SQLService;
 import com.example.moody.text_watcher.QueueFactory;
 import com.example.moody.text_watcher.TextChangeQueue;
+import com.example.moody.text_watcher.TextQueueIngester;
 import com.example.moody.text_watcher.TypingEvent;
 import com.github.anastr.speedviewlib.ProgressiveGauge;
 import com.spark.submitbutton.SubmitButton;
@@ -78,9 +85,28 @@ public class Typing_Test extends AppCompatActivity {
         speedometer.speedTo(0);
 
         start_time = DateTime.now().getMillis();
-
+        uuid = UUID.randomUUID().toString();
         SQLService service = new SQLService();
         mooddb = service.new MoodDbHelper(this.getApplicationContext()).getWritableDatabase();
+
+        ActivityQueue activityQueue = JavaActivityQueue.getInstance();
+        TextQueueIngester textIngester = new TextQueueIngester();
+        QueueIngester metadataIngester = new QueueIngester(5, service);
+        textIngester.setRunning(true);
+        metadataIngester.setRunning(true);
+        new Thread(new Runnable() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            public void run() {
+                textIngester.startIngestActivities(activityQueue);
+            }
+        }).start();
+
+        new Thread(new Runnable() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            public void run() {
+                metadataIngester.startIngestActivities(activityQueue, uuid);
+            }
+        }).start();
     }
 
     private void showRadioDialog(){
@@ -178,7 +204,6 @@ public class Typing_Test extends AppCompatActivity {
             TypingEvent typingEvent = new TypingEvent();
             typingEvent.setTime(time);
             typingEvent.setText(s.toString());
-            uuid = UUID.randomUUID().toString();
             typingEvent.setId(uuid);
             queue.addActivity(typingEvent);
 

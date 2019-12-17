@@ -12,16 +12,22 @@ public class QueueIngester {
     private int batchingTimeInterval;
     private PersistanceService persistanceService;
 
+    private boolean isRunning = true;
+
+    public void setRunning(boolean running) {
+        isRunning = running;
+    }
+
     public QueueIngester(int thresholdTime, PersistanceService persistanceService) {
         this.batchingTimeInterval = thresholdTime;
         this.persistanceService = persistanceService;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public void startIngestActivities(ActivityQueue activityQueue) {
+    public void startIngestActivities(ActivityQueue activityQueue, String batchId) {
         MetadataUtils metadataUtils = MetadataUtils.getInstance();
         List<KeyboardActivity> batch = new ArrayList<>();
-        while(true){
+        while(isRunning){
             Optional<KeyboardActivity> activityOptional =  activityQueue.peekActivity();
 
             if(activityOptional.isPresent()) {
@@ -40,7 +46,7 @@ public class QueueIngester {
             }
             // Ignoring isolated character events
             if(batch.size() > 1){
-                Metadata metadata = metadataUtils.createMetadata(batch);
+                Metadata metadata = metadataUtils.createMetadata(batch, batchId);
                 persistanceService.persistMetadata(metadata);
             }
             batch.clear();

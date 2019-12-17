@@ -8,7 +8,7 @@ public class Metadata {
 
     private int numberOfCharacters;
 
-    private float time; //Total time taken to write all these characters
+    private double time; //Total time taken to write all these characters
 
     private int specialCharacters;
 
@@ -21,7 +21,7 @@ public class Metadata {
     }
 
     public float getErrorRate(){
-        return errors/numberOfCharacters;
+        return (errors/numberOfCharacters)*100;
     }
 
     public float getTimeInSec(){
@@ -41,11 +41,11 @@ public class Metadata {
         this.numberOfCharacters = numberOfCharacters;
     }
 
-    public float getTime() {
+    public double getTime() {
         return time;
     }
 
-    public void setTime(float time) {
+    public void setTime(double time) {
         this.time = time;
     }
 

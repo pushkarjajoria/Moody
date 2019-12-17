@@ -14,9 +14,13 @@ public class TextQueueIngester {
     private ActivityQueue activityQueue;
     private TextChangeQueue beforeQueue = QueueFactory.getBeforeChangeInstance();
     private TextChangeQueue afterQueue = QueueFactory.getAfterChangeInstance();
+    private boolean isRunning = true;
 
-    TextQueueIngester(ActivityQueue queue) {
-        this.activityQueue = queue;
+    public void setRunning(boolean running) {
+        isRunning = running;
+    }
+
+    public TextQueueIngester() {
     }
 
     private boolean idMatchFor(TypingEvent beforeEvent, TypingEvent afterEvent) {
@@ -25,7 +29,7 @@ public class TextQueueIngester {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void startIngestActivities(ActivityQueue activityQueue) {
-        while(true){
+        while(isRunning){
             Optional<TypingEvent> beforeEventOpt = beforeQueue.peekActivity();
             Optional<TypingEvent> afterEventOpt = afterQueue.peekActivity();
 
@@ -37,10 +41,6 @@ public class TextQueueIngester {
                     activityQueue.addActivity(processedActivity.get());
                 }
             }
-            else{
-                continue;
-            }
-
         }
     }
 

@@ -15,7 +15,7 @@ public class MetadataUtils {
     private MetadataUtils() {
     }
 
-    public Metadata createMetadata(List<KeyboardActivity> batch){
+    public Metadata createMetadata(List<KeyboardActivity> batch, String batchId){
         Metadata metadata = new Metadata();
         DateTime now = DateTime.now();
         int numberOfCharacter = 0;
@@ -40,6 +40,11 @@ public class MetadataUtils {
                 }
             }
         }
+        metadata.setBatchId(batchId);
+        metadata.setErrors(error);
+        metadata.setNumberOfCharacters(numberOfCharacter);
+        metadata.setTime(totalTime);
+        metadata.setSpecialCharacters(numberOfSpecialCharacters);
         return metadata;
     }
 }
