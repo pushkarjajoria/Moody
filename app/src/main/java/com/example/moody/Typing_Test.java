@@ -51,6 +51,8 @@ public class Typing_Test extends AppCompatActivity {
 
     private String final_text = "";
     private long start_time = 0;
+    private QueueIngester metadataIngester;
+    private TextQueueIngester textIngester;
 
     private SQLiteDatabase mooddb;
 
@@ -90,8 +92,8 @@ public class Typing_Test extends AppCompatActivity {
         mooddb = service.new MoodDbHelper(this.getApplicationContext()).getWritableDatabase();
 
         ActivityQueue activityQueue = JavaActivityQueue.getInstance();
-        TextQueueIngester textIngester = new TextQueueIngester();
-        QueueIngester metadataIngester = new QueueIngester(5, service);
+        textIngester = new TextQueueIngester();
+        metadataIngester = new QueueIngester(5, service, this.getApplicationContext());
         textIngester.setRunning(true);
         metadataIngester.setRunning(true);
         new Thread(new Runnable() {
@@ -147,8 +149,10 @@ public class Typing_Test extends AppCompatActivity {
         TitanicTextView tv = (TitanicTextView) dialogView.findViewById(R.id.titanic_tv);
         tv.setTypeface(Typefaces.get(this, "Satisfy-Regular.ttf"));
         new Titanic().start(tv);
-
+        metadataIngester.setRunning(false);
+        textIngester.setRunning(false);
         final AlertDialog.Builder layoutDialog = new AlertDialog.Builder(this);
+
 
         // here the data should be stored to the database.
         if (chosenNumber == -1){
@@ -221,7 +225,6 @@ public class Typing_Test extends AppCompatActivity {
             typingEvent.setTime(time);
             typingEvent.setText(s.toString());
             typingEvent.setId(uuid);
-            uuid = "";
             queue.addActivity(typingEvent);
 
             final_text = s.toString();

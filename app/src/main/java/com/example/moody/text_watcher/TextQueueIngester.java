@@ -33,7 +33,7 @@ public class TextQueueIngester {
             Optional<TypingEvent> beforeEventOpt = beforeQueue.peekActivity();
             Optional<TypingEvent> afterEventOpt = afterQueue.peekActivity();
 
-            if(beforeEventOpt.isPresent() && afterEventOpt.isPresent() && idMatchFor(beforeEventOpt.get(), afterEventOpt.get())) {
+            if(beforeEventOpt.isPresent() && afterEventOpt.isPresent()) {
                 TypingEvent beforeEvent = beforeQueue.getActivity().get();
                 TypingEvent afterEvent = afterQueue.getActivity().get();
                 Optional<KeyboardActivity> processedActivity = KeyboardActivityUtils.getInstance().generateKeyboardActivityFrom(beforeEvent, afterEvent);

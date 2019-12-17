@@ -26,7 +26,7 @@ public class KeyboardActivityUtils {
     public Optional<KeyboardActivity> generateKeyboardActivityFrom(TypingEvent beforeEvent, TypingEvent afterEvent) {
         long time = afterEvent.getTime();
         int beforeLength = beforeEvent.getText().length();
-        int afterLength = beforeEvent.getText().length();
+        int afterLength = afterEvent.getText().length();
         if(beforeLength - afterLength == 1) {
             return Optional.of(new KeyboardActivity(ButtonType.BACKSPACE, time));
         }
@@ -35,7 +35,7 @@ public class KeyboardActivityUtils {
         }
         else {
             try {
-                String addedString = StringUtils.difference(afterEvent.getText(), beforeEvent.getText());
+                String addedString = StringUtils.difference(beforeEvent.getText(), afterEvent.getText());
                 char addedCharacter = addedString.toCharArray()[0];
                 if(CharUtils.isAsciiAlpha(addedCharacter) || CharUtils.isAsciiNumeric(addedCharacter)) {
                     return Optional.of(new KeyboardActivity(ButtonType.TEXT_CHARACTER, time));

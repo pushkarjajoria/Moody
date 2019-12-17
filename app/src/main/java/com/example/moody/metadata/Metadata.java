@@ -24,10 +24,6 @@ public class Metadata {
         return (errors/numberOfCharacters)*100;
     }
 
-    public float getTimeInSec(){
-        return 0.0f;
-    }
-
     // Setter Getter
     public void setTimestamp(DateTime timestamp) {
         this.timestamp = timestamp;

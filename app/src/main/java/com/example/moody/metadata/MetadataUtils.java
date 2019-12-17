@@ -45,6 +45,7 @@ public class MetadataUtils {
         metadata.setNumberOfCharacters(numberOfCharacter);
         metadata.setTime(totalTime);
         metadata.setSpecialCharacters(numberOfSpecialCharacters);
+        metadata.setTimestamp(DateTime.now());
         return metadata;
     }
 }

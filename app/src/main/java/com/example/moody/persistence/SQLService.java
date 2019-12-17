@@ -1,5 +1,6 @@
 package com.example.moody.persistence;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -9,8 +10,15 @@ import com.example.moody.metadata.Metadata;
 
 public class SQLService implements PersistanceService {
 
-    public boolean persistMetadata(Metadata metadata) {
-        return true;
+    public long persistMetadata(Metadata metadata, SQLiteDatabase db) {
+        ContentValues values = new ContentValues();
+        values.put(TableEntry.COLUMN_NAME_TIMESTAMP, metadata.getTimestamp().getMillis());
+        values.put(TableEntry.COLUMN_NAME_NUMBER_OF_CHARACTERS, metadata.getNumberOfCharacters());
+        values.put(TableEntry.COLUMN_NAME_TOTAL_TIME, metadata.getTime());
+        values.put(TableEntry.COLUMN_NAME_NUMBER_OF_SPECIAL_CHARACTERS, metadata.getSpecialCharacters());
+        values.put(TableEntry.COLUMN_NAME_NUMBER_OF_ERROR, metadata.getErrors());
+        values.put(TableEntry.COLUMN_NAME_BATCH_ID, metadata.getBatchId());
+        return db.insert(TableEntry.TABLE_NAME, null, values);
     }
 
     public static class TableEntry implements BaseColumns {
@@ -54,7 +62,7 @@ public class SQLService implements PersistanceService {
             "DROP TABLE IF EXISTS " + TableMood.TABLE_NAME;
 
 
-    public class FeedReaderDbHelper extends SQLiteOpenHelper {
+    public static class FeedReaderDbHelper extends SQLiteOpenHelper {
         // If you change the database schema, you must increment the database version.
         public static final int DATABASE_VERSION = 1;
         public static final String DATABASE_NAME = "FeedReader.db";
