@@ -26,7 +26,7 @@ import com.example.moody.Titanic.Typefaces;
 import com.example.moody.metadata.ActivityQueue;
 import com.example.moody.metadata.JavaActivityQueue;
 import com.example.moody.metadata.QueueIngester;
-import com.example.moody.persistence.PersistanceService;
+import com.example.moody.persistence.Database;
 import com.example.moody.persistence.SQLService;
 import com.example.moody.text_watcher.QueueFactory;
 import com.example.moody.text_watcher.TextChangeQueue;
@@ -90,10 +90,10 @@ public class Typing_Test extends AppCompatActivity {
         uuid = UUID.randomUUID().toString();
         SQLService service = new SQLService();
         mooddb = service.new MoodDbHelper(this.getApplicationContext()).getWritableDatabase();
-
+        Database.getInstance().setDatabase(mooddb);
         ActivityQueue activityQueue = JavaActivityQueue.getInstance();
         textIngester = new TextQueueIngester();
-        metadataIngester = new QueueIngester(5, service, this.getApplicationContext());
+        metadataIngester = new QueueIngester(5, service);
         textIngester.setRunning(true);
         metadataIngester.setRunning(true);
         new Thread(new Runnable() {
