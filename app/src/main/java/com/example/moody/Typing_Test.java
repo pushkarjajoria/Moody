@@ -21,7 +21,6 @@ import com.dd.processbutton.iml.ActionProcessButton;
 import com.example.moody.Titanic.Titanic;
 import com.example.moody.Titanic.TitanicTextView;
 import com.example.moody.Titanic.Typefaces;
-import com.example.moody.persistence.PersistanceService;
 import com.example.moody.persistence.SQLService;
 import com.example.moody.text_watcher.QueueFactory;
 import com.example.moody.text_watcher.TextChangeQueue;
@@ -135,9 +134,9 @@ public class Typing_Test extends AppCompatActivity {
 
 
 
-        TextView total_length_value = dialogView.findViewById(R.id.total_length_value);
-        TextView average_speed_value = dialogView.findViewById(R.id.average_speed_value);
-        TextView total_time_value = dialogView.findViewById(R.id.total_time_value);
+        TextView total_length_value = dialogView.findViewById(R.id.total_length_textview);
+        TextView average_speed_value = dialogView.findViewById(R.id.average_speed_textview);
+        TextView total_time_value = dialogView.findViewById(R.id.total_time_textview);
 
         DecimalFormat decimalFormat=new DecimalFormat(".00");
 
