@@ -11,9 +11,12 @@ import com.example.moody.AAChartCoreLib.AAChartEnum.AAChartType;
 
 public class DataVirtualization extends AppCompatActivity {
     private final String[] mood_type = new String[]{
-        new String(Character.toChars(Integer.parseInt("1F601", 16))),
-                new String(Character.toChars(Integer.parseInt("1F642", 16))),
-                new String(Character.toChars(Integer.parseInt("1F643", 16))) };
+
+        new String(Character.toChars(Integer.parseInt("1F604", 16))),
+                new String(Character.toChars(Integer.parseInt("1F603", 16))),
+                new String(Character.toChars(Integer.parseInt("1F610", 16))),
+                new String(Character.toChars(Integer.parseInt("1F643", 16))),
+                new String(Character.toChars(Integer.parseInt("1F62D", 16))) };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +46,7 @@ public class DataVirtualization extends AppCompatActivity {
                 .yAxisGridLineWidth(0f)
                 .series(new AASeriesElement[]{
                         new AASeriesElement()
-                                .data(new Object[]{90,110,130})
+                                .data(new Object[]{90,110,130,140,150})
                 });
 
         TSM_view.aa_drawChartWithChartModel(TSM_model);
@@ -57,7 +60,7 @@ public class DataVirtualization extends AppCompatActivity {
                 .yAxisGridLineWidth(0f)
                 .series(new AASeriesElement[]{
                         new AASeriesElement()
-                                .data(new Object[]{4.2,16.2,33.8})
+                                .data(new Object[]{4.2,16.2,33.8,44.7,88.9})
                 });
 
         EM_view.aa_drawChartWithChartModel(EM_model);
