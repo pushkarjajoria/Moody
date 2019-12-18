@@ -10,7 +10,11 @@ import com.example.moody.AAChartCoreLib.AAChartConfiger.AAChartModel;
 import com.example.moody.AAChartCoreLib.AAChartConfiger.AAChartView;
 import com.example.moody.AAChartCoreLib.AAChartConfiger.AASeriesElement;
 import com.example.moody.AAChartCoreLib.AAChartEnum.AAChartType;
+import com.example.moody.AAChartCoreLib.AAOptionsModel.AAPie;
 import com.example.moody.persistence.SQLService;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
 
 public class DataVirtualization extends AppCompatActivity {
     private final String[] mood_type = new String[]{
@@ -26,32 +30,71 @@ public class DataVirtualization extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_data_virtualization);
 
+        ArrayList<String> mood_vs_speed = new ArrayList<>();
+        ArrayList<Float> speed = new ArrayList<>();
+
+
+        Object[][] mood_id = new Object[5][2];
+        for (int i = 0; i < mood_type.length; i++) {
+            mood_id[i][0] = mood_type[i];
+            mood_id[i][1] = 0.0;
+        }
+
+        ArrayList<String> mood_vs_error = new ArrayList<>();
+        ArrayList<Float> error_rate = new ArrayList<>();
+
+
         SQLService service = new SQLService();
         SQLiteDatabase db = service.new MoodDbHelper(this.getApplicationContext()).getReadableDatabase();
-        Cursor cursor = db.rawQuery("select * from inputdata;",null);
+        Cursor cursor = db.rawQuery("select round(avg(length(input_text)/total_time),3),mood from inputdata group by mood;",null);
         while (cursor.moveToNext()) {
-            int personid = cursor.getInt(0);
-            String name = cursor.getString(1);
-            int age = cursor.getInt(2);
+            speed.add(cursor.getFloat(0));
+            mood_vs_speed.add(mood_type[cursor.getInt(1)]);
+        }
+
+        cursor = db.rawQuery("select mood,round(sum(1.0/(select count(*) from inputdata)),2) from inputdata group by mood order by mood;",null);
+        while (cursor.moveToNext()) {
+            int mood = cursor.getInt(0);
+            mood_id[mood][0] = mood_type[mood];
+            mood_id[mood][1] = cursor.getFloat(1);
+        }
+
+        cursor = db.rawQuery("select round(avg(error_count*1.0/char_count)*100,2),mood from inputdata join TypingData TD on inputdata.batch_id = TD.batch_id group by mood;",null);
+        while (cursor.moveToNext()) {
+            error_rate.add(cursor.getFloat(0));
+            mood_vs_error.add(mood_type[cursor.getInt(1)]);
         }
 
         cursor.close();
         db.close();
 
+
         AAChartView MT_view = findViewById(R.id.MT);
 
+//        AAChartModel MT_model = new AAChartModel()
+//                .chartType(AAChartType.Area)
+//                .categories(id.toArray(new String[0]))
+//                .dataLabelsEnabled(true)
+//                .yAxisGridLineWidth(0f)
+//                .legendEnabled(false)
+//                .yAxisTitle("seconds")
+//                .title("MOOD VS TIME")
+//                .series(new AASeriesElement[]{
+//                        new AASeriesElement()
+//                                .data(mood_vs_id.toArray(new String[0]))
+//                });
+
         AAChartModel MT_model = new AAChartModel()
-                .chartType(AAChartType.Area)
-                .categories(new String[]{"10/2","10/3","10/4","10/5", "10/6","10/7","10/8","10/9","10/10"})
-                .dataLabelsEnabled(true)
-                .yAxisGridLineWidth(0f)
-                .legendEnabled(false)
-                .yAxisTitle("minutes")
+                .chartType(AAChartType.Pie)
                 .title("MOOD VS TIME")
-                .series(new AASeriesElement[]{
-                        new AASeriesElement()
-                                .data(new Object[]{7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6})
-                });
+                .dataLabelsEnabled(true)
+                .yAxisTitle("%")
+                .series(new AAPie[] {
+                        new AAPie()
+                                .innerSize("20%")
+                                .data(mood_id)}
+                );
+
 
         MT_view.aa_drawChartWithChartModel(MT_model);
 
@@ -59,15 +102,15 @@ public class DataVirtualization extends AppCompatActivity {
 
         AAChartModel TSM_model = new AAChartModel()
                 .chartType(AAChartType.Column)
-                .categories(mood_type)
+                .categories(mood_vs_speed.toArray(new String[0]))
                 .dataLabelsEnabled(true)
                 .yAxisGridLineWidth(0f)
                 .legendEnabled(false)
-                .yAxisTitle("characters/minutes")
-                .title("TOTAL SPEED VS MOOD")
+                .yAxisTitle("characters/secs")
+                .title("AVERAGE SPEED VS MOOD")
                 .series(new AASeriesElement[]{
                         new AASeriesElement()
-                                .data(new Object[]{90,110,130,140,150})
+                                .data(speed.toArray(new Float[0]))
                 });
 
         TSM_view.aa_drawChartWithChartModel(TSM_model);
@@ -76,7 +119,7 @@ public class DataVirtualization extends AppCompatActivity {
 
         AAChartModel EM_model = new AAChartModel()
                 .chartType(AAChartType.Column)
-                .categories(mood_type)
+                .categories(mood_vs_error.toArray(new String[0]))
                 .dataLabelsEnabled(true)
                 .yAxisGridLineWidth(0f)
                 .yAxisTitle("%")
@@ -84,7 +127,7 @@ public class DataVirtualization extends AppCompatActivity {
                 .legendEnabled(false)
                 .series(new AASeriesElement[]{
                         new AASeriesElement()
-                                .data(new Object[]{4.2,16.2,33.8,44.7,88.9})
+                                .data(error_rate.toArray(new Float[0]))
                 });
 
         EM_view.aa_drawChartWithChartModel(EM_model);

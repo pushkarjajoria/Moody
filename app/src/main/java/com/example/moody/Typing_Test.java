@@ -74,14 +74,13 @@ public class Typing_Test extends AppCompatActivity {
 
         submit = findViewById(R.id.submit);
 //        SubmitButton submit = findViewById(R.id.submit);
-        submit.setEnabled(false);
+//        submit.setEnabled(false);
         submit.setMode(ActionProcessButton.Mode.ENDLESS);
 
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                submit.setEnabled(false);
                 showRadioDialog();
             }
         });
@@ -116,6 +115,12 @@ public class Typing_Test extends AppCompatActivity {
     }
 
     private void showRadioDialog(){
+        if (final_text.length() < 30 ){
+            Toast.makeText(Typing_Test.this,"Text is too short, at least 30 characters.",Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+
         final_time = DateTime.now().getMillis();
         String s1 = new String(Character.toChars(Integer.parseInt("1F604", 16)));
         String s2 = new String(Character.toChars(Integer.parseInt("1F603", 16)));
@@ -235,7 +240,7 @@ public class Typing_Test extends AppCompatActivity {
 
             final_text = s.toString();
 
-            submit.setEnabled(s.toString().length() >= 30);
+//            submit.setEnabled(s.toString().length() >= 30);
         }
 
         @Override
