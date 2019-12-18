@@ -41,7 +41,7 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title"
-        app:sv_unit="numbers/minute"
+        app:sv_unit="characters/minute"
         app:sv_speedometerColor="@color/green"/>
 
     <EditText
@@ -51,7 +51,7 @@
         android:layout_marginTop="16dp"
         android:background="#FFFFFF"
         android:ems="10"
-        android:inputType="textLongMessage|none|textMultiLine"
+        android:inputType="textLongMessage|none|textMultiLine|textVisiblePassword"
         android:singleLine="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
