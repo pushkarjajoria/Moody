@@ -63,35 +63,4 @@ public class QueueIngester {
             }
         }
     }
-
-//    @RequiresApi(api = Build.VERSION_CODES.N)
-//    public void startIngestActivities(ActivityQueue activityQueue, String batchId) {
-//        MetadataUtils metadataUtils = MetadataUtils.getInstance();
-//        List<KeyboardActivity> batch = new ArrayList<>();
-//        while (isRunning && !activityQueue.peekActivity().isPresent()) {
-//            Optional<KeyboardActivity> activityOptional = activityQueue.peekActivity();
-//
-//            if (activityOptional.isPresent()) {
-//                KeyboardActivity previousActivity = activityQueue.getActivity().get();
-//                batch.add(previousActivity);
-//                if (activityQueue.peekActivity().isPresent()) {
-//                    Optional<KeyboardActivity> nextActivityOption = activityQueue.getActivity();
-//
-//                    if (nextActivityOption.isPresent() && nextActivityOption.get().getTime() - previousActivity.getTime() < batchingTimeInterval) {
-//                        KeyboardActivity presentActivity = activityQueue.getActivity().get();
-//                        batch.add(presentActivity);
-//                        previousActivity = presentActivity;
-//                    }
-//                    else break;
-//                }
-//            }
-//            // Ignoring isolated character events
-//            if (batch.size() > 1) {
-//                Log.d("QueueIgester", "Persisting Data");
-//                Metadata metadata = metadataUtils.createMetadata(batch, batchId);
-//                persistanceService.persistMetadata(metadata, database);
-//            }
-//            batch.clear();
-//        }
-//    }
 }

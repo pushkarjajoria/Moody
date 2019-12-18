@@ -29,14 +29,19 @@ public class MetadataUtils {
             if(previousTime == 0){
                 previousTime = kActivity.getTime();
             }
-            totalTime += previousTime - kActivity.getTime();
+            totalTime += kActivity.getTime() - previousTime;
             previousTime = kActivity.getTime();
             switch (kActivity.getType()) {
-                case BACKSPACE: error+=1;
-                case TEXT_CHARACTER: numberOfCharacter += 1;
+                case BACKSPACE:
+                    error+=1;
+                    break;
+                case TEXT_CHARACTER:
+                    numberOfCharacter += 1;
+                    break;
                 case SPECIAL_CHARACTER: {
                     numberOfSpecialCharacters += 1;
                     numberOfCharacter += 1;
+                    break;
                 }
             }
         }
