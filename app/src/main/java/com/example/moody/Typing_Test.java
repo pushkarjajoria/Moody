@@ -51,10 +51,13 @@ public class Typing_Test extends AppCompatActivity {
 
     private String final_text = "";
     private long start_time = 0;
+    private long final_time = 0;
     private QueueIngester metadataIngester;
     private TextQueueIngester textIngester;
 
     private SQLiteDatabase mooddb;
+
+    private ActionProcessButton submit;
 
     private int chosenNumber = -2;
 
@@ -69,8 +72,9 @@ public class Typing_Test extends AppCompatActivity {
         passwordEditText = (EditText) findViewById(R.id.editText);
         passwordEditText.addTextChangedListener(passwordWatcher);
 
-        ActionProcessButton submit = findViewById(R.id.submit);
+        submit = findViewById(R.id.submit);
 //        SubmitButton submit = findViewById(R.id.submit);
+        submit.setEnabled(false);
         submit.setMode(ActionProcessButton.Mode.ENDLESS);
 
 
@@ -83,7 +87,7 @@ public class Typing_Test extends AppCompatActivity {
         });
 
         speedometer = findViewById(R.id.gauge);
-        speedometer.setMinMaxSpeed(0, 150);
+        speedometer.setMinMaxSpeed(0, 350);
         speedometer.speedTo(0);
 
         start_time = DateTime.now().getMillis();
@@ -112,6 +116,7 @@ public class Typing_Test extends AppCompatActivity {
     }
 
     private void showRadioDialog(){
+        final_time = DateTime.now().getMillis();
         String s1 = new String(Character.toChars(Integer.parseInt("1F604", 16)));
         String s2 = new String(Character.toChars(Integer.parseInt("1F603", 16)));
         String s3 = new String(Character.toChars(Integer.parseInt("1F610", 16)));
@@ -127,7 +132,7 @@ public class Typing_Test extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 chosenNumber = which;
-                Toast.makeText(Typing_Test.this,String.valueOf(chosenNumber),Toast.LENGTH_SHORT).show();
+//                Toast.makeText(Typing_Test.this,String.valueOf(chosenNumber),Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -155,14 +160,15 @@ public class Typing_Test extends AppCompatActivity {
 
 
         // here the data should be stored to the database.
-        if (chosenNumber == -1){
+        if (chosenNumber == -2){
             chosenNumber = 0;
         }
+
+        double total_time = (float)(final_time-start_time)/1000.0;
+
         mooddb.execSQL(
-                "insert into inputdata values ('"+uuid+"','"+final_text+"',"+chosenNumber+");"
+                "insert into inputdata values ('"+uuid+"',"+total_time+",'"+final_text+"',"+chosenNumber+");"
         );
-
-
 
         TextView total_length_value = dialogView.findViewById(R.id.total_length_textview);
         TextView average_speed_value = dialogView.findViewById(R.id.average_speed_textview);
@@ -172,9 +178,9 @@ public class Typing_Test extends AppCompatActivity {
 
         String text_length = String.valueOf(final_text.length());
         total_length_value.setText(text_length);
-        String total_time = decimalFormat.format((float)(DateTime.now().getMillis()-start_time)/1000.0)+" seconds";
-        total_time_value.setText(total_time);
-        String average_speed = String.valueOf((float)(final_text.length())/(float)(DateTime.now().getMillis()-start_time)*60000);
+        String total_time_string = decimalFormat.format(total_time)+" seconds";
+        total_time_value.setText(total_time_string);
+        String average_speed = String.valueOf((float)(final_text.length())/(float)(final_time-start_time)*60000);
         average_speed_value.setText(average_speed);
 
 
@@ -191,7 +197,7 @@ public class Typing_Test extends AppCompatActivity {
                         Intent intent = new Intent(Typing_Test.this, MainActivity.class);
                         startActivity(intent);
                     }
-                }, 1600);
+                }, 1100);
 
             }
         });
@@ -228,6 +234,8 @@ public class Typing_Test extends AppCompatActivity {
             queue.addActivity(typingEvent);
 
             final_text = s.toString();
+
+            submit.setEnabled(s.toString().length() >= 30);
         }
 
         @Override

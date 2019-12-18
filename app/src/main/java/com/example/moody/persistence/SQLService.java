@@ -26,6 +26,7 @@ public class SQLService implements PersistanceService {
         public static final String COLUMN_NAME_BATCH_ID = "batch_id";
         public static final String COLUMN_NAME_INPUT_TEXT = "input_text";
         public static final String COLUMN_NAME_MOOD = "mood";
+        public static final String COLUMN_NAME_TOTAL_TIME = "total_time";
     }
 
     private static final String SQL_CREATE_ENTRIES =
@@ -45,6 +46,7 @@ public class SQLService implements PersistanceService {
             "CREATE TABLE "+TableMood.TABLE_NAME+"("+
             TableMood.COLUMN_NAME_BATCH_ID+" varchar not NULL "+
             "constraint TABLEMOOD_pk primary key,"+
+            TableMood.COLUMN_NAME_TOTAL_TIME+" int not NULL, "+
             TableMood.COLUMN_NAME_INPUT_TEXT +" varchar,"+
             TableMood.COLUMN_NAME_MOOD +" int not null)";
 
